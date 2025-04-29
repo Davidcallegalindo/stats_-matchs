@@ -100,6 +100,10 @@
       user-select: none;
       margin: 2px;
     }
+    /* Mobile fallback: highlight the tapped bench player */
+    .bench-player.selected-bench {
+      background: #add8e6;
+    }
     @media (max-width: 768px) {
       #bench .bench-player { width: 20px; height: 20px; }
     }
@@ -233,6 +237,7 @@
     const actionTypes = ['pase_acertado','pase_fallado','disparo','disparo_puerta','balon_recuperado','balon_perdido'];
     const dorsales = Array.from({ length: 20 }, (_, i) => i + 1);
     let selectedDorsal = null;
+    let selectedBench = null;
     let startTime = null;
     let matchActive = false;
     let matchEnded = false;
@@ -296,8 +301,17 @@ function loadState() {
               }
             }
           });
-          // Click para seleccionar jugador en partido
+          // Mobile fallback: if a bench player is selected and match not started, assign them
           cell.addEventListener('click', () => {
+            if (!matchActive && selectedBench !== null) {
+              starters[pos] = selectedBench;
+              selectedBench = null;
+              document.querySelectorAll('.bench-player').forEach(b => b.classList.remove('selected-bench'));
+              saveState();
+              renderBench();
+              renderFormation();
+              return;
+            }
             if (matchActive && !matchEnded && starters[pos]) {
               selectedDorsal = starters[pos];
               document.querySelectorAll('.formation-pos').forEach(c => c.classList.remove('selected'));
@@ -314,7 +328,14 @@ function loadState() {
       dorsales.filter(d => !Object.values(starters).includes(d)).forEach(d => {
         const p = document.createElement('div');
         p.className = 'bench-player'; p.textContent = d; p.draggable = !matchEnded;
-        p.addEventListener('dragstart', e => e.dataTransfer.setData('text', d)); benchDiv.appendChild(p);
+        p.addEventListener('dragstart', e => e.dataTransfer.setData('text', d));
+        // Mobile tap fallback: select bench player
+        p.addEventListener('click', () => {
+          document.querySelectorAll('.bench-player').forEach(b => b.classList.remove('selected-bench'));
+          selectedBench = d;
+          p.classList.add('selected-bench');
+        });
+        benchDiv.appendChild(p);
       });
     }
     function renderActions() {
