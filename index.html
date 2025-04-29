@@ -286,32 +286,22 @@ function loadState() {
           cell.className = 'formation-pos';
           cell.dataset.pos = pos;
           cell.textContent = starters[pos] || '';
-          cell.addEventListener('dragover', e => { e.preventDefault(); cell.classList.add('dragover'); });
-          cell.addEventListener('dragleave', () => cell.classList.remove('dragover'));
-          cell.addEventListener('drop', e => {
-            e.preventDefault(); cell.classList.remove('dragover');
-            const d = Number(e.dataTransfer.getData('text'));
-            if (!matchActive) {
-              starters[pos] = d; saveState(); renderBench(); renderFormation();
-            } else if (matchActive && !matchEnded) {
-              if (starters[pos] === d) {
-                selectedDorsal = d;
-                document.querySelectorAll('.formation-pos').forEach(c => c.classList.remove('selected'));
-                cell.classList.add('selected');
-              }
-            }
-          });
-          // Mobile fallback: if a bench player is selected and match not started, assign them
           cell.addEventListener('click', () => {
-            if (!matchActive && selectedBench !== null) {
-              starters[pos] = selectedBench;
-              selectedBench = null;
-              document.querySelectorAll('.bench-player').forEach(b => b.classList.remove('selected-bench'));
-              saveState();
-              renderBench();
-              renderFormation();
+            // If match not active, prompt for dorsal to assign
+            if (!matchActive) {
+              const input = prompt('Introduce el dorsal (1-20):');
+              const d = parseInt(input);
+              if (d >= 1 && d <= 20 && !Object.values(starters).includes(d)) {
+                starters[pos] = d;
+                saveState();
+                renderBench();
+                renderFormation();
+              } else {
+                alert('Dorsal inválido o ya asignado.');
+              }
               return;
             }
+            // During match: select player for action
             if (matchActive && !matchEnded && starters[pos]) {
               selectedDorsal = starters[pos];
               document.querySelectorAll('.formation-pos').forEach(c => c.classList.remove('selected'));
