@@ -287,18 +287,15 @@ function loadState() {
           cell.dataset.pos = pos;
           cell.textContent = starters[pos] || '';
           cell.addEventListener('click', () => {
-            // If match not active, prompt for dorsal to assign
-            if (!matchActive) {
-              const input = prompt('Introduce el dorsal (1-20):');
-              const d = parseInt(input);
-              if (d >= 1 && d <= 20 && !Object.values(starters).includes(d)) {
-                starters[pos] = d;
-                saveState();
-                renderBench();
-                renderFormation();
-              } else {
-                alert('Dorsal inválido o ya asignado.');
-              }
+            // Before match starts: if a bench dorsal is selected, assign it here
+            if (!matchActive && selectedBench !== null) {
+              starters[pos] = selectedBench;
+              // clear bench selection highlight
+              document.querySelectorAll('.bench-player').forEach(b => b.classList.remove('selected-bench'));
+              selectedBench = null;
+              saveState();
+              renderBench();
+              renderFormation();
               return;
             }
             // During match: select player for action
