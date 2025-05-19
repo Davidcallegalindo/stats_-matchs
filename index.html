@@ -490,8 +490,8 @@ function loadState() {
       });
     });
 
-    // Ensure state is saved if the user reloads or closes the page
-    window.addEventListener('beforeunload', saveState);
+    // Immediately save restored state back to localStorage
+    saveState();
   </script>
 </body>
 </html>
