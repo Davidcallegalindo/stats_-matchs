@@ -227,6 +227,12 @@
   <script>
     const formationDiv = document.getElementById('formation');
     const formationSelect = document.getElementById('formationSelect');
+    // Re-render formation and bench when formation changes
+    formationSelect.addEventListener('change', () => {
+      saveState();            // persist new formation
+      renderFormation();
+      renderBench();
+    });
     const benchDiv = document.getElementById('bench');
     const actionsDiv = document.getElementById('actions');
     const playerFilter = document.getElementById('playerFilter');
