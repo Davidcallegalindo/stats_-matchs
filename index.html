@@ -371,6 +371,10 @@ function loadState() {
     function initCharts() {
       actionTypes.forEach(a => {
         const ctx = document.getElementById(`chart_${a}`).getContext('2d');
+        // Destroy existing chart instance if present to avoid canvas reuse errors
+        if (charts[a]) {
+          charts[a].destroy();
+        }
         // Use red for "pase_fallado" and "balon_perdido", default color (e.g., green/blue) otherwise
         const bgColor = ['pase_fallado', 'balon_perdido'].includes(a)
           ? 'rgba(255,99,132,0.8)'  // red for failed passes and lost balls
