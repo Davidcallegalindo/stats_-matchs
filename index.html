@@ -157,6 +157,7 @@
     .chart-container {
       width: 100%;
       margin: 0;
+      min-height: 250px;
     }
     .chart-container h3 { text-align: center; margin: 5px 0; }
     canvas { width: 100% !important; height: auto !important; }
@@ -173,6 +174,16 @@
     }
     #statsTable th {
       background: #e0e0e0;
+    }
+
+    /* Responsive chart layout */
+    @media (max-width: 768px) {
+      #charts {
+        grid-template-columns: 1fr !important;
+      }
+      .chart-container {
+        min-height: 200px;
+      }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -375,12 +386,14 @@ function loadState() {
             }]
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
-              x: { ticks: { autoSkip: false, maxRotation: 0 } },
+              x: { ticks: { autoSkip: true, maxTicksLimit: 10 } },
               y: { beginAtZero: true }
             },
             plugins: { legend: { display: false } }
-          }
+          },
         });
       });
     }
