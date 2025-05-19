@@ -227,9 +227,11 @@
   <script>
     const formationDiv = document.getElementById('formation');
     const formationSelect = document.getElementById('formationSelect');
-    // Re-render formation and bench when formation changes
+    // When the formation dropdown changes, immediately re-render field and bench
     formationSelect.addEventListener('change', () => {
-      saveState();            // persist new formation
+      // Persist the new formation
+      saveState();
+      // Update the displayed formation and bench lineup
       renderFormation();
       renderBench();
     });
