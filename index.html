@@ -489,6 +489,9 @@ function loadState() {
         document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
       });
     });
+
+    // Ensure state is saved if the user reloads or closes the page
+    window.addEventListener('beforeunload', saveState);
   </script>
 </body>
 </html>
